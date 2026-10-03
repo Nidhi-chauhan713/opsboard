@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpsBoard</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- Login -->
+  <section id="login-view" class="login hidden">
+    <form id="login-form" class="card login-card">
+      <h1>OpsBoard</h1>
+      <p class="muted">Operational work, coordinated.</p>
+      <label>Email
+        <select id="login-email">
+          <option value="alice@opsboard.dev">alice@opsboard.dev — member (Payments, Support)</option>
+          <option value="bob@opsboard.dev">bob@opsboard.dev — member (Payments, Platform)</option>
+          <option value="carol@opsboard.dev">carol@opsboard.dev — member (Platform)</option>
+          <option value="lead.payments@opsboard.dev">lead.payments@opsboard.dev — lead (Payments)</option>
+          <option value="lead.platform@opsboard.dev">lead.platform@opsboard.dev — lead (Platform, Payments)</option>
+          <option value="dave@opsboard.dev">dave@opsboard.dev — lead (Customer Support)</option>
+          <option value="erin@opsboard.dev">erin@opsboard.dev — lead (Compliance)</option>
+          <option value="victor@opsboard.dev">victor@opsboard.dev — viewer (Payments, Platform)</option>
+          <option value="admin@opsboard.dev">admin@opsboard.dev — global admin</option>
+        </select>
+      </label>
+      <label>Password <input id="login-password" type="password" value="password" autocomplete="current-password"></label>
+      <button type="submit" class="primary">Sign in</button>
+      <p id="login-error" class="error"></p>
+    </form>
+  </section>
+
+  <!-- App -->
+  <section id="app-view" class="hidden">
+    <header class="topbar">
+      <strong class="brand">OpsBoard</strong>
+      <span id="me-label" class="muted"></span>
+      <span class="spacer"></span>
+      <button id="new-item-btn" class="primary">+ New work item</button>
+      <div class="notif-wrap">
+        <button id="notif-btn" aria-label="Notifications">🔔 <span id="notif-count" class="badge hidden">0</span></button>
+        <div id="notif-panel" class="card notif-panel hidden"></div>
+      </div>
+      <button id="logout-btn">Sign out</button>
+    </header>
+
+    <div class="tiles" id="tiles"></div>
+
+    <main class="layout">
+      <section class="list-col">
+        <div class="filters">
+          <input id="f-q" type="search" placeholder="Search title & description…" aria-label="Search">
+          <select id="f-team" aria-label="Team"><option value="">All my teams</option></select>
+          <select id="f-status" aria-label="Status">
+            <option value="active">Active</option>
+            <option value="">Any status</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In progress</option>
+            <option value="awaiting_approval">Awaiting approval</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+          <select id="f-priority" aria-label="Priority">
+            <option value="">Any priority</option><option>P1</option><option>P2</option><option>P3</option><option>P4</option>
+          </select>
+          <select id="f-assignee" aria-label="Owner">
+            <option value="">Anyone</option><option value="me">Me</option><option value="unassigned">Unassigned</option>
+          </select>
+          <select id="f-sort" aria-label="Sort">
+            <option value="priority">Sort: priority</option>
+            <option value="updated">Sort: recently changed</option>
+            <option value="created">Sort: newest</option>
+          </select>
+          <label class="inline"><input id="f-overdue" type="checkbox"> Overdue</label>
+        </div>
+        <ul id="item-list" class="item-list"></ul>
+        <div class="list-footer">
+          <button id="load-more" class="hidden">Load more</button>
+          <span id="list-status" class="muted"></span>
+        </div>
+      </section>
+
+      <section class="detail-col" id="detail">
+        <p class="muted empty">Select a work item to see its details and history.</p>
+      </section>
+    </main>
+  </section>
+
+  <!-- New item dialog -->
+  <dialog id="new-dialog">
+    <form id="new-form" method="dialog" class="stack">
+      <h2>New work item</h2>
+      <label>Team <select name="team_id" required></select></label>
+      <label>Title <input name="title" required maxlength="200"></label>
+      <label>Description <textarea name="description" rows="4"></textarea></label>
+      <div class="row">
+        <label>Kind
+          <select name="kind">
+            <option value="customer_issue">Customer issue</option><option value="engineering">Engineering</option>
+            <option value="payment">Payment</option><option value="incident">Incident</option>
+            <option value="compliance">Compliance</option><option value="ops_task">Ops task</option>
+          </select>
+        </label>
+        <label>Priority <select name="priority"><option>P1</option><option>P2</option><option selected>P3</option><option>P4</option></select></label>
+        <label>Due <input name="due_at" type="date"></label>
+      </div>
+      <label class="inline"><input name="requires_approval" type="checkbox"> Requires approval (always on for payment & compliance)</label>
+      <label class="inline"><input name="assign_me" type="checkbox" checked> Assign to me</label>
+      <p class="error" id="new-error"></p>
+      <div class="row end">
+        <button value="cancel" formnovalidate>Cancel</button>
+        <button id="new-submit" class="primary" value="default">Create</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
